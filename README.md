@@ -176,6 +176,16 @@ console.log([ 1, 2, 3, 4 ] + "");   // prints 1-2-3-4
 
 So the difference between `define` and `around` is that the first overwrites, while the second wraps.  You almost always want to call `Yo.next()` in an `around` method.
 
+The equivalent of the above code in plain JS would be:
+
+```js
+(function(prev_join){
+  Array.prototype.join = function(sep) {
+    return prev_join.call(this, sep || "-");
+  };
+})(Array.prototype.join);
+```
+
 ### One last thing: what if I *don't* want to call the base class constructor?
 
 The `extend` method will define a constructor that calls the base class automatically before doing anything else.  If you need more control over that, there's a `derive` method which works exactly the same, but you can use `Yo.next()` to call the base class constructor whenever you prefer:
@@ -216,6 +226,6 @@ The simplest implementation would be to have a `call_next` global variable that'
 
 - pass `call_next` as an argument.  Again dismissed because of the headache to keep track of another argument in all these methods.
 
-So it occurred to me that the `call_next` can actually be a property of the very function that you pass to `define`/`before`/`after`/`around`.  The only requirement, to be able to access it, is that you have to give it a name (or use `arguments.callee`, but that's long and out of fashion and won't work under `"use strict"`).
+So it occurred to me that the `call_next` can actually be a property of the very function that you pass to `define`/`around`.  The only requirement, to be able to access it, is that you have to give it a name (or use `arguments.callee`, but that's long and out of fashion and won't work under `"use strict"`).
 
 You don't have to name it `Yo`, but that's the first name that crossed my mind.
